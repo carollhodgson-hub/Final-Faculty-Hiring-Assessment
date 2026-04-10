@@ -230,7 +230,7 @@
 
       <div class="section">
         <h2>Interview Question Areas</h2>
-        <p class="muted">Each area below includes three question selectors. The rating dropdown is built directly into each question card.</p>
+        <p class="muted">Each performance area includes one question dropdown, one rating dropdown, and one comments box.</p>
         <div id="categoriesContainer"></div>
 
         <div class="button-row">
@@ -317,6 +317,14 @@
       `;
     }
 
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
     function questionOptionsHtml(questions) {
       return questions.map(q => `<option value="${escapeHtml(q)}">${escapeHtml(q)}</option>`).join("");
     }
@@ -329,33 +337,29 @@
         const block = document.createElement("div");
         block.className = "category-block";
 
-        const cards = [0,1,2].map((slot) => `
+        block.innerHTML = `
+          <h3>${escapeHtml(category.title)}</h3>
           <div class="question-card">
-            <label for="question_${index}_${slot}">Question ${slot + 1}</label>
-            <select id="question_${index}_${slot}">
+            <label for="question_${index}">Question</label>
+            <select id="question_${index}">
               <option value="">Select a question</option>
               ${questionOptionsHtml(category.questions)}
             </select>
 
             <div class="question-grid">
               <div>
-                <label for="score_${index}_${slot}">Rating</label>
-                <select id="score_${index}_${slot}" class="score-input">
+                <label for="score_${index}">Rating</label>
+                <select id="score_${index}" class="score-input">
                   ${ratingOptionsHtml()}
                 </select>
               </div>
 
               <div>
-                <label for="comment_${index}_${slot}">Comments / Candidate Response Notes</label>
-                <textarea id="comment_${index}_${slot}" placeholder="Enter notes here..."></textarea>
+                <label for="comment_${index}">Comments / Candidate Response Notes</label>
+                <textarea id="comment_${index}" placeholder="Enter notes here..."></textarea>
               </div>
             </div>
           </div>
-        `).join("");
-
-        block.innerHTML = `
-          <h3>${category.title}</h3>
-          ${cards}
         `;
 
         container.appendChild(block);
@@ -403,14 +407,6 @@
       }
 
       recommendationBox.appendChild(recommendation);
-    }
-
-    function escapeHtml(text) {
-      return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
     }
 
     createCategoryBlocks();
